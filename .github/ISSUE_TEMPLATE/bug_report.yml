@@ -1,0 +1,220 @@
+name: Bug Report
+description: Report a bug found in the QuickWallet application during the testathon.
+title: "[BUG] <short description>"
+labels: ["bug", "needs-triage"]
+body:
+
+  - type: markdown
+    attributes:
+      value: |
+        ## Bug Report
+        Thank you for submitting a bug! Please fill in every section as completely as possible.
+        A well-written report increases your chances of receiving full points and helps the team reproduce the issue quickly.
+
+        > **Tip:** A good bug report answers: *What happened? How do I reproduce it? What did I expect instead?*
+
+  # ─── CLASSIFICATION ────────────────────────────────────────────────────────
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How severe is this bug? Choose the category that best fits.
+      options:
+        - "Low – Minor UI glitch or cosmetic issue, no functional impact"
+        - "Medium – Functional issue affecting a feature, workaround exists"
+        - "High – Critical functional failure, data integrity issue, or security concern"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: difficulty
+    attributes:
+      label: Discovery Difficulty
+      description: How difficult was this bug to find? This is your self-assessment for scoring.
+      options:
+        - "Easy – Found through normal UI exploration"
+        - "Medium – Required edge cases, tools, or multi-step scenarios"
+        - "Hard – Required technical depth (security, performance, chaining)"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Functional Area
+      description: Which area of the application does this bug affect?
+      options:
+        - Authentication (Register / Login / Logout)
+        - Accounts (Create / View / Manage)
+        - Transactions – Deposit
+        - Transactions – Withdraw
+        - Transactions – Transfer
+        - Spending Limits
+        - Transaction History
+        - Currency Conversion
+        - Admin Panel
+        - API
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: interface
+    attributes:
+      label: Interface
+      description: Where was the bug observed?
+      options:
+        - Web UI only
+        - API only
+        - Both Web UI and API
+      default: 0
+    validations:
+      required: true
+
+  # ─── DESCRIPTION ───────────────────────────────────────────────────────────
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: A clear and concise one or two sentence description of the bug.
+      placeholder: "e.g. A user can withdraw funds that exceed the configured daily spending limit without any error."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: |
+        Provide a precise, numbered sequence of steps that **reliably** reproduces the issue.
+        Include any prerequisite state (e.g. "logged in as a regular user with an EUR account containing 500 EUR").
+      placeholder: |
+        1. Log in as a regular user
+        2. Create an EUR account with an initial deposit of 500 EUR
+        3. Set the daily spending limit to 100 EUR
+        4. Navigate to Withdraw and enter 200 EUR
+        5. Click Confirm
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Result
+      description: What *should* have happened according to the application's documented behaviour?
+      placeholder: "e.g. The withdrawal should be rejected with an error message stating the daily limit has been reached."
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Result
+      description: What *actually* happened? Be specific — include error messages, values, or unexpected behaviour verbatim.
+      placeholder: "e.g. The withdrawal was approved and the balance was updated to 300 EUR. No error was shown."
+    validations:
+      required: true
+
+  # ─── TECHNICAL DETAIL ──────────────────────────────────────────────────────
+
+  - type: textarea
+    id: api_detail
+    attributes:
+      label: API Request / Response (if applicable)
+      description: |
+        If the bug was found or confirmed via the API, paste the relevant request and response here.
+        Redact any sensitive credentials.
+      placeholder: |
+        Request:
+        POST /transactions/api/withdraw
+        {
+          "account_id": 3,
+          "amount": 200
+        }
+
+        Response (HTTP 200):
+        {
+          "status": "success",
+          "new_balance": 300.00
+        }
+      render: text
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: |
+        Attach screenshots, screen recordings, or paste relevant log output.
+        You can drag and drop image files directly into this field.
+      placeholder: "Drag & drop screenshots here, or describe what visual evidence you have."
+
+  # ─── ENVIRONMENT ───────────────────────────────────────────────────────────
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser & Version (if UI bug)
+      placeholder: "e.g. Chrome 124, Firefox 126, Edge 124"
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating System
+      placeholder: "e.g. Windows 11, macOS Sonoma, Ubuntu 22.04"
+
+  - type: input
+    id: app_version
+    attributes:
+      label: Application Version / Build
+      placeholder: "e.g. quickwallet.exe — provided on 2026-03-13"
+
+  # ─── IMPACT & ROOT CAUSE ───────────────────────────────────────────────────
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Impact
+      description: Who is affected and what is the potential consequence if this bug exists in production?
+      placeholder: "e.g. Any authenticated user can bypass spending limits, potentially draining their account beyond intended restrictions. This could cause financial loss in a real banking system."
+
+  - type: textarea
+    id: hypothesis
+    attributes:
+      label: Root Cause Hypothesis (optional)
+      description: If you have a theory about *why* this bug occurs, share it here. This is optional but demonstrates technical depth.
+      placeholder: "e.g. The limit check appears to happen client-side only and is not enforced by the API endpoint."
+
+  # ─── REPRODUCIBILITY ───────────────────────────────────────────────────────
+
+  - type: dropdown
+    id: reproducibility
+    attributes:
+      label: Reproducibility
+      options:
+        - "Always – Reproduces every time"
+        - "Often – Reproduces most of the time"
+        - "Sometimes – Intermittent, hard to reproduce"
+        - "Once – Observed once, could not reproduce again"
+    validations:
+      required: true
+
+  # ─── CHECKLIST ─────────────────────────────────────────────────────────────
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Submission Checklist
+      description: Please confirm the following before submitting.
+      options:
+        - label: I have provided a clear title following the `[BUG] <short description>` format
+          required: true
+        - label: I have included numbered, reproducible steps
+          required: true
+        - label: I have stated both the expected and actual result
+          required: true
+        - label: I have checked that this bug has not already been reported by my team
+          required: true
+        - label: I have attached evidence (screenshot, API response, or recording) where applicable
+          required: false
