@@ -223,7 +223,6 @@ A valid bug report must include:
 5. **Actual Result** — what actually happened
 6. **Evidence** — screenshot, API response, or video where applicable
 
-> Duplicate reports (same bug found by multiple teams) are awarded to the team that submitted first. Partial credit may be given for incomplete but valid reports.
 
 #### Automation Requirements
 - Automate at least one test case
@@ -236,7 +235,7 @@ A valid bug report must include:
 
 ## Tools & Resources
 
-You are free to use any tool. Here are some suggestions:
+You are free to use any tool. 
 
 ---
 
@@ -244,10 +243,9 @@ You are free to use any tool. Here are some suggestions:
 
 1. **Do not share bugs** with other teams during the discovery phase
 2. **Do not attempt to crash other teams' instances** — each team runs their own copy of the exe
-3. **Do not modify the exe** or the database directly — bugs must be reproducible through the application's interfaces (UI or API)
-4. **All bugs must be reproducible** — "I saw it once" is not sufficient without steps to reproduce
-5. **Submit before time is called** — late submissions will not be accepted
-6. Do not push **anything** to main branch. 
+3. **All bugs must be reproducible** — "I saw it once" is not sufficient without steps to reproduce
+4. **Submit before time is called** — late submissions will not be accepted
+5. Do not push **anything** to main branch. 
 
 ---
 
@@ -285,7 +283,8 @@ You are free to use any tool. Here are some suggestions:
 
 ## Support
 
-If the application crashes or fails to start, ask an organiser for assistance. Do not attempt to debug or modify the executable yourself.
+If the application crashes or fails to start, ask an organiser for assistance. 
+Do not attempt to debug or modify the executable yourself.
 
 Good luck, and happy bug hunting!
 
