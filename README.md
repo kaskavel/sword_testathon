@@ -178,23 +178,9 @@ The application exposes a full REST API. All endpoints are documented interactiv
 
 ---
 
-## Agenda
-
-| Time          | Activity                                                                                      |
-|---------------|-----------------------------------------------------------------------------------------------|
-| 10:15 – 10:25 | **Kick-off** — Welcome from the organizers: Ioannis, Kostas, and Liana                       |
-|               | Greetings from Nikos Mastroyiannopoulos                                                       |
-| 10:25 – 10:30 | Quick Wallet application presentation — rules, scoring, and reporting explained               |
-| 10:35 – 11:30 | **Test Plan Challenge** — Write a Test Plan covering the most critical areas of the application. Explore QuickWallet and document your test plan based on the requirements provided. |
-| 11:30 – 13:30 | **Bugs Discovery & Automation** — Test the application, report bugs, and automate at least one test case |
-| 13:30 – 14:00 | **Showcase** — Team presentations (2 minutes each)                                            |
-| 14:00 – 14:15 | Scoring, winners announced & celebration                                                      |
-
----
-
 ## Event Structure
 
-### Phase 1 — Test Plan Challenge (10:35 – 11:30)
+### Part 1 — Test Planning
 
 Before diving into bug hunting, each team will produce a structured test plan for the QuickWallet application.
 
@@ -206,25 +192,23 @@ Before diving into bug hunting, each team will produce a structured test plan fo
 
 #### How to Submit Your Test Plan
 
-Open an issue in this repository:
-
-1. Go to the **Issues** tab and click **New Issue**
+1. Go to the **Issues** tab of this repository and click **New Issue**
 2. Select the **Test Plan** template
-3. Fill in the details and attach your test plan document (any format accepted — PDF, Word, Excel, etc.)
+3. Attach your test plan document (any format accepted — PDF, Word, Excel, etc.)
 4. Add the label matching your team (e.g. `team-1`, `team-2`, etc.)
-5. Submit the issue before the phase ends
+5. Submit before the phase ends
 
 ---
 
-### Phase 2 — Bug Discovery & Automation (11:30 – 13:30)
+### Part 2 — Bug Discovery & Automation
 
 Your goal is to find as many bugs as possible and automate at least one test case.
 
 #### How to Report a Bug
 
-Open an issue in this repository for each bug found:
+Open a separate issue for each bug found:
 
-1. Go to the **Issues** tab and click **New Issue**
+1. Go to the **Issues** tab of this repository and click **New Issue**
 2. Select the **Bug Report** template
 3. Fill in all required fields carefully — quality of reporting is scored
 4. Add the label matching your team (e.g. `team-1`, `team-2`, etc.)

@@ -4,86 +4,13 @@ title: "[TEST PLAN] Team <your team name>"
 labels: ["test-plan"]
 body:
 
-  - type: markdown
-    attributes:
-      value: |
-        ## Test Plan Submission
-        Use this form to submit your team's test plan.
-
-        Attach your test plan document below — any format is accepted (PDF, Word, Excel, Markdown, etc.).
-        Fill in the summary fields to give reviewers a quick overview without needing to open the file.
-
-  - type: input
-    id: team
-    attributes:
-      label: Team Name
-      placeholder: "e.g. Team 3"
-    validations:
-      required: true
-
-  - type: input
-    id: members
-    attributes:
-      label: Team Members
-      placeholder: "e.g. Alice, Bob, Carol"
-    validations:
-      required: true
-
-  - type: textarea
-    id: scope
-    attributes:
-      label: Scope Summary
-      description: Briefly list the functional areas your test plan covers.
-      placeholder: |
-        - Authentication (registration, login, logout)
-        - Account management
-        - Deposit / Withdraw / Transfer transactions
-        - Spending limits
-        - Admin panel
-        - API endpoints
-    validations:
-      required: true
-
-  - type: textarea
-    id: approach
-    attributes:
-      label: Testing Approach
-      description: Briefly describe your strategy — what types of testing you applied and why.
-      placeholder: |
-        e.g. We prioritised functional testing of the transaction flows (highest risk area), followed by boundary testing of spending limits, and finished with basic security checks on the API.
-    validations:
-      required: true
-
-  - type: textarea
-    id: tools
-    attributes:
-      label: Tools & Frameworks
-      description: List the tools you used or planned to use.
-      placeholder: |
-        - Postman — API testing
-        - Python (requests) — automation
-        - Browser DevTools — network inspection
-        - Excel — test case documentation
-
   - type: textarea
     id: attachment
     attributes:
       label: Test Plan Document
       description: |
-        Attach your full test plan document here by dragging and dropping the file into this field.
-        Accepted formats: PDF, DOCX, XLSX, MD, or any other readable format.
+        Attach your test plan document by dragging and dropping the file into this field.
+        Any format is accepted — PDF, Word, Excel, Markdown, etc.
       placeholder: "Drag and drop your file here."
     validations:
       required: true
-
-  - type: checkboxes
-    id: checklist
-    attributes:
-      label: Submission Checklist
-      options:
-        - label: The issue title follows the format `[TEST PLAN] Team <name>`
-          required: true
-        - label: I have added our team label (e.g. `team-1`) to this issue
-          required: true
-        - label: The test plan document is attached
-          required: true
