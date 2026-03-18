@@ -28,24 +28,57 @@ There is also an **admin panel** for system administrators with visibility into 
 
 ## Getting Started
 
-You will receive a single file: **`quickwallet.exe`**
+### Accessing the Application
 
-### Running the Application
+Each team has its own dedicated container with an isolated database running on a shared server. Access your instance using the URL below, replacing the port with the one assigned to your team:
 
-1. Place `quickwallet.exe` in a folder of your choice
-2. Run it from Powershell:
-3. The application starts and a database file (`quickwallet.db`) is automatically created in the same folder
-4. Open your browser and navigate to:
+| Team             | URL                                                      |
+|------------------|----------------------------------------------------------|
+| Organizing Committee | http://azeuwathdevtestathonvm.azeuwdevath.lan:8000   |
+| Team 1           | http://azeuwathdevtestathonvm.azeuwdevath.lan:8001       |
+| Team 2           | http://azeuwathdevtestathonvm.azeuwdevath.lan:8002       |
+| Team 3           | http://azeuwathdevtestathonvm.azeuwdevath.lan:8003       |
+| Team 4           | http://azeuwathdevtestathonvm.azeuwdevath.lan:8004       |
+| Team 5           | http://azeuwathdevtestathonvm.azeuwdevath.lan:8005       |
+| Team 6           | http://azeuwathdevtestathonvm.azeuwdevath.lan:8006       |
+| Team 7           | http://azeuwathdevtestathonvm.azeuwdevath.lan:8007       |
+| Team 8           | http://azeuwathdevtestathonvm.azeuwdevath.lan:8008       |
+| Team 9           | http://azeuwathdevtestathonvm.azeuwdevath.lan:8009       |
+| Team 10          | http://azeuwathdevtestathonvm.azeuwdevath.lan:8010       |
+| Team 11          | http://azeuwathdevtestathonvm.azeuwdevath.lan:8011       |
+| Team 12          | http://azeuwathdevtestathonvm.azeuwdevath.lan:8012       |
+| Team 13          | http://azeuwathdevtestathonvm.azeuwdevath.lan:8013       |
+| Team 14          | http://azeuwathdevtestathonvm.azeuwdevath.lan:8014       |
+| Team 15          | http://azeuwathdevtestathonvm.azeuwdevath.lan:8015       |
+| Team 16          | http://azeuwathdevtestathonvm.azeuwdevath.lan:8016       |
 
-| Interface        | URL                              |
-|------------------|----------------------------------|
-| Web UI           | http://localhost:8000            |
-| Admin Panel      | http://localhost:8000/admin      |
-| API Docs (Swagger) | http://localhost:8000/docs     |
-| API Docs (ReDoc) | http://localhost:8000/redoc      |
-| API Info         | http://localhost:8000/api        |
-| User login       | http://localhost:8000/auth/login |
+Once on your team's URL, the available interfaces are:
 
+| Interface          | Path             |
+|--------------------|------------------|
+| Web UI             | /                |
+| Admin Panel        | /admin           |
+| API Docs (Swagger) | /docs            |
+| API Docs (ReDoc)   | /redoc           |
+| API Info           | /api             |
+| User Login         | /auth/login      |
+
+> If you experience any connectivity issues, contact the organizing committee immediately.
+
+### Running Locally (VPN fallback only)
+
+If you have a VPN issue and cannot reach the shared server, you can run the application locally using the executable provided in this repository.
+
+1. Download `quickwallet.exe` from this repo
+2. Place it in a folder of your choice
+3. Run it from PowerShell:
+   ```powershell
+   .\quickwallet.exe
+   ```
+4. The application will start and create a `quickwallet.db` file in the same folder
+5. Access it at `http://localhost:8000`
+
+> This option is a fallback only. Always prefer the shared server instance during the testathon.
 
 ### Default Credentials
 
@@ -145,29 +178,62 @@ The application exposes a full REST API. All endpoints are documented interactiv
 
 ---
 
+## Agenda
+
+| Time          | Activity                                                                                      |
+|---------------|-----------------------------------------------------------------------------------------------|
+| 10:15 – 10:25 | **Kick-off** — Welcome from the organizers: Ioannis, Kostas, and Liana                       |
+|               | Greetings from Nikos Mastroyiannopoulos                                                       |
+| 10:25 – 10:30 | Quick Wallet application presentation — rules, scoring, and reporting explained               |
+| 10:35 – 11:30 | **Test Plan Challenge** — Write a Test Plan covering the most critical areas of the application. Explore QuickWallet and document your test plan based on the requirements provided. |
+| 11:30 – 13:30 | **Bugs Discovery & Automation** — Test the application, report bugs, and automate at least one test case |
+| 13:30 – 14:00 | **Showcase** — Team presentations (2 minutes each)                                            |
+| 14:00 – 14:15 | Scoring, winners announced & celebration                                                      |
+
+---
+
 ## Event Structure
 
-The event is divided into two parts.
+### Phase 1 — Test Plan Challenge (10:35 – 11:30)
 
-### Part 1 — Bug Discovery 
+Before diving into bug hunting, each team will produce a structured test plan for the QuickWallet application.
 
-Your goal is to find as many bugs as possible in the QuickWallet application.
+#### Test Plan Requirements
+- Identify the key functional areas to test
+- Define test cases (positive and negative)
+- Prioritise by risk
+- State what tools and approaches you would use
 
-**Bug categories and scoring:**
+#### How to Submit Your Test Plan
 
-| Category | Points per bug | Description |
-|----------|---------------|-------------|
-| Easy     | 10 pts        | Findable through normal UI exploration |
-| Medium   | 20 pts        | Requires edge cases, tools, or multi-step scenarios |
-| Hard     | 40 pts        | Requires technical depth — security, performance, chaining |
+Open an issue in this repository:
 
+1. Go to the **Issues** tab and click **New Issue**
+2. Select the **Test Plan** template
+3. Fill in the details and attach your test plan document (any format accepted — PDF, Word, Excel, etc.)
+4. Add the label matching your team (e.g. `team-1`, `team-2`, etc.)
+5. Submit the issue before the phase ends
+
+---
+
+### Phase 2 — Bug Discovery & Automation (11:30 – 13:30)
+
+Your goal is to find as many bugs as possible and automate at least one test case.
 
 #### How to Report a Bug
 
-Submit each bug using the provided reporting form/template. A valid bug report must include:
+Open an issue in this repository for each bug found:
+
+1. Go to the **Issues** tab and click **New Issue**
+2. Select the **Bug Report** template
+3. Fill in all required fields carefully — quality of reporting is scored
+4. Add the label matching your team (e.g. `team-1`, `team-2`, etc.)
+5. Submit the issue
+
+A valid bug report must include:
 
 1. **Title** — short description of the bug
-2. **Category** — Easy / Medium / Hard (your assessment)
+2. **Severity** — Low / Medium / High (your assessment)
 3. **Steps to Reproduce** — clear, numbered steps that reliably reproduce the issue
 4. **Expected Result** — what should have happened
 5. **Actual Result** — what actually happened
@@ -175,27 +241,12 @@ Submit each bug using the provided reporting form/template. A valid bug report m
 
 > Duplicate reports (same bug found by multiple teams) are awarded to the team that submitted first. Partial credit may be given for incomplete but valid reports.
 
----
-
-### Part 2 — Test Planning, Automation and Test Reporting 
-
-Based on the bugs found in the first half (and any additional ones), your team will:
-
-1. **Write a Test Plan** covering the most critical areas of the application
-2. **Automate test cases of your own choice** using any tool or language of your choice
-3. Assess whether a new version of the application that will be provided to you is a go or a no go for a live deployment. 
-
-#### Test Plan Requirements
-- Identify the key functional areas to test
-- Define test cases (positive and negative)
-- Prioritise by risk
-- State what tools/approaches you would use
-
 #### Automation Requirements
+- Automate at least one test case
 - Scripts must be runnable and produce clear pass/fail output
 - Any language or framework is accepted (Python, JavaScript, Postman collections, etc.)
 - AI assistance is allowed — but you must understand and be able to explain your code
-- Any code you wish to submit, needs to be committed to this repo and pushed to a branch containing your team's name. 
+- Commit your code to this repo and push to a branch named after your team (e.g. `team-1`)
 
 ---
 
@@ -231,21 +282,18 @@ You are free to use any tool. Here are some suggestions:
 
 ## Scoring & Winners
 
-| Category                | Sub-category                        | Points  |
-|-------------------------|-------------------------------------|---------|
-| Bugs Found              | Low Severity                        | 20      |
-|                         | Medium Severity                     | 30      |
-|                         | High Severity                       | 50      |
-| Bug Reporting Quality   | Clarity & Reproducibility           | 20      |
-|                         | Timeliness                          | 10      |
-| Test Strategy Plan      | Structure & Coverage                | 30      |
-|                         | Creativity & Prioritization         | 10      |
-| Automation Suite        | Functionality                       | 30      |
-|                         | Code Quality & Reusability          | 20      |
-| Final Result – Go/No-Go | Justification Quality               | 40      |
-|                         | Accuracy                            | 10      |
-| Bonus Points            | Critical Bug / Plan / Collaboration | 30      |
-| **TOTAL**               |                                     | **300** |
+| Category              | Criteria                             | Max Points |
+|-----------------------|--------------------------------------|------------|
+| Bugs Found            | Low Severity                         | 40         |
+|                       | Medium Severity                      | 50         |
+|                       | High Severity                        | 60         |
+| Bug Reporting Quality | Clarity & Reproducibility            | 50         |
+| Test Strategy Plan    | Structure & Coverage                 | 60         |
+|                       | Creativity & Prioritization          | 10         |
+| Presentation          | Presentation of testing approach     | 50         |
+| Automation Suite      | Automation test                      | 30         |
+| Bonus Points          | Extra bug / Creativity / Out-of-box thinking | 50   |
+| **TOTAL**             |                                      | **400**    |
 
 - In case of a tie, the team with the earliest submission timestamp wins
 
