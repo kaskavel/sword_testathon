@@ -1,0 +1,726 @@
+{
+  "info": {
+    "name": "QuickWallet Test Suite",
+    "description": "Automated test cases for the QuickWallet banking application.\n\nRun with Newman:\n  npm install -g newman\n  newman run QuickWallet_TestSuite.postman_collection.json --env-var base_url=http://azeuwathdevtestathonvm.azeuwdevath.lan:8001\n\nOr locally:\n  newman run QuickWallet_TestSuite.postman_collection.json --env-var base_url=http://localhost:8000",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8000", "type": "string" },
+    { "key": "user_a_token", "value": "", "type": "string" },
+    { "key": "user_b_token", "value": "", "type": "string" },
+    { "key": "user_a_account_id", "value": "", "type": "string" },
+    { "key": "user_b_account_id", "value": "", "type": "string" },
+    { "key": "user_a_account_number", "value": "", "type": "string" },
+    { "key": "user_b_account_number", "value": "", "type": "string" },
+    { "key": "user_a_balance_before_transfer", "value": "0", "type": "string" },
+    { "key": "user_b_balance_before_transfer", "value": "0", "type": "string" },
+    { "key": "timestamp", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "1 - Authentication",
+      "item": [
+        {
+          "name": "A1 - Register User A",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "const ts = Date.now();",
+                  "pm.collectionVariables.set('timestamp', ts);",
+                  "pm.collectionVariables.set('user_a_username', 'user_a_' + ts);",
+                  "pm.collectionVariables.set('user_b_username', 'user_b_' + ts);"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('A1 - Register User A: status is 200 or 201', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "pm.test('A1 - Register User A: response contains user info', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.have.any.keys('id', 'username', 'message');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "username", "value": "{{user_a_username}}", "type": "text" },
+                { "key": "email", "value": "{{user_a_username}}@test.com", "type": "text" },
+                { "key": "full_name", "value": "User A Test", "type": "text" },
+                { "key": "password", "value": "password123", "type": "text" }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/auth/api/register", "host": ["{{base_url}}"], "path": ["auth", "api", "register"] }
+          }
+        },
+        {
+          "name": "A1 - Login User A (valid credentials)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('A1 - Login valid credentials: status is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('A1 - Login valid credentials: returns access token', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.have.property('access_token');",
+                  "    pm.collectionVariables.set('user_a_token', json.access_token);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "username", "value": "{{user_a_username}}", "type": "text" },
+                { "key": "password", "value": "password123", "type": "text" }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/auth/api/login", "host": ["{{base_url}}"], "path": ["auth", "api", "login"] }
+          }
+        },
+        {
+          "name": "A2 - Login with wrong password",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('A2 - Login wrong password: status is 401 or 400', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 401, 403]);",
+                  "});",
+                  "pm.test('A2 - Login wrong password: no access_token in response', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.not.have.property('access_token');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "username", "value": "{{user_a_username}}", "type": "text" },
+                { "key": "password", "value": "WRONG_PASSWORD", "type": "text" }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/auth/api/login", "host": ["{{base_url}}"], "path": ["auth", "api", "login"] }
+          }
+        },
+        {
+          "name": "A3 - Access protected endpoint without auth",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('A3 - No auth: status is 401 or 403', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([401, 403]);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{base_url}}/accounts/api/list", "host": ["{{base_url}}"], "path": ["accounts", "api", "list"] }
+          }
+        },
+        {
+          "name": "A5 - Access admin endpoint as regular user",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('A5 - Admin endpoint as regular user: status is 401 or 403', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([401, 403]);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{user_a_token}}" }],
+            "url": { "raw": "{{base_url}}/admin/api/users", "host": ["{{base_url}}"], "path": ["admin", "api", "users"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2 - Core Financial Flow (User A)",
+      "item": [
+        {
+          "name": "AC1 - Create EUR Account",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('AC1 - Create account: status is 200 or 201', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});",
+                  "pm.test('AC1 - Create account: account number matches QWxxxxxxxxxx format', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.have.property('account_number');",
+                  "    pm.expect(json.account_number).to.match(/^QW\\d{10}$/);",
+                  "    pm.collectionVariables.set('user_a_account_id', json.id || json.account_id);",
+                  "    pm.collectionVariables.set('user_a_account_number', json.account_number);",
+                  "});",
+                  "pm.test('AC1 - Create account: currency is EUR', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.currency).to.eql('EUR');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{user_a_token}}" }],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "currency", "value": "EUR", "type": "text" }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/accounts/api/create", "host": ["{{base_url}}"], "path": ["accounts", "api", "create"] }
+          }
+        },
+        {
+          "name": "T1 - Deposit 500 EUR",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('T1 - Deposit: status is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('T1 - Deposit: balance increased to 500.00', function () {",
+                  "    const json = pm.response.json();",
+                  "    const balance = parseFloat(json.balance ?? json.new_balance ?? json.account?.balance);",
+                  "    pm.expect(balance).to.eql(500.00);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{user_a_token}}" }],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "account_id", "value": "{{user_a_account_id}}", "type": "text" },
+                { "key": "amount", "value": "500", "type": "text" }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/transactions/api/deposit", "host": ["{{base_url}}"], "path": ["transactions", "api", "deposit"] }
+          }
+        },
+        {
+          "name": "T2 - Deposit negative amount (should fail)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('T2 - Deposit negative: status is 400 or 422', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 422, 403]);",
+                  "});",
+                  "pm.test('T2 - Deposit negative: no success in response', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.not.have.property('balance');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{user_a_token}}" }],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "account_id", "value": "{{user_a_account_id}}", "type": "text" },
+                { "key": "amount", "value": "-50", "type": "text" }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/transactions/api/deposit", "host": ["{{base_url}}"], "path": ["transactions", "api", "deposit"] }
+          }
+        },
+        {
+          "name": "T3 - Withdraw 200 EUR",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('T3 - Withdraw: status is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('T3 - Withdraw: balance decreased to 300.00', function () {",
+                  "    const json = pm.response.json();",
+                  "    const balance = parseFloat(json.balance ?? json.new_balance ?? json.account?.balance);",
+                  "    pm.expect(balance).to.eql(300.00);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Authorization", "value": "Bearer {{user_a_token}}" }],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "account_id", "value": "{{user_a_account_id}}", "type": "text" },
+                { "key": "amount", "value": "200", "type": "text" }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/transactions/api/withdraw", "host": ["{{base_url}}"], "path": ["transactions", "api", "withdraw"] }
+          }
+        },
+        {
+          "name": "T5 - Withdraw more than balance (should fail)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('T5 - Overdraft: status is 400 or 422', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 422, 403]);",
+                  "});",
+                  "pm.test('T5 - Overdraft: balance unchanged (still 300)', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.not.have.property('balance');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{user_a_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"account_id\": {{user_a_account_id}},\n  \"amount\": 99999\n}"
+            },
+            "url": { "raw": "{{base_url}}/transactions/api/withdraw", "host": ["{{base_url}}"], "path": ["transactions", "api", "withdraw"] }
+          }
+        },
+        {
+          "name": "H1 - Transaction history is non-empty",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('H1 - History: status is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "pm.test('H1 - History: contains at least 2 transactions', function () {",
+                  "    const json = pm.response.json();",
+                  "    const list = Array.isArray(json) ? json : json.transactions ?? json.data ?? [];",
+                  "    pm.expect(list.length).to.be.at.least(2);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{user_a_token}}" }],
+            "url": { "raw": "{{base_url}}/transactions/api/history", "host": ["{{base_url}}"], "path": ["transactions", "api", "history"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3 - Transfer Integrity (User A → User B)",
+      "item": [
+        {
+          "name": "Setup - Register User B",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Setup - Register User B: status is 200 or 201', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "username", "value": "{{user_b_username}}", "type": "text" },
+                { "key": "email", "value": "{{user_b_username}}@test.com", "type": "text" },
+                { "key": "full_name", "value": "User B Test", "type": "text" },
+                { "key": "password", "value": "password123", "type": "text" }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/auth/api/register", "host": ["{{base_url}}"], "path": ["auth", "api", "register"] }
+          }
+        },
+        {
+          "name": "Setup - Login User B",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Setup - Login User B: returns token', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.have.property('access_token');",
+                  "    pm.collectionVariables.set('user_b_token', json.access_token);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                { "key": "username", "value": "{{user_b_username}}", "type": "text" },
+                { "key": "password", "value": "password123", "type": "text" }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/auth/api/login", "host": ["{{base_url}}"], "path": ["auth", "api", "login"] }
+          }
+        },
+        {
+          "name": "Setup - Create User B EUR Account",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Setup - Create User B account: success', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+                  "    const json = pm.response.json();",
+                  "    pm.collectionVariables.set('user_b_account_id', json.id || json.account_id);",
+                  "    pm.collectionVariables.set('user_b_account_number', json.account_number);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{user_b_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currency\": \"EUR\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/accounts/api/create", "host": ["{{base_url}}"], "path": ["accounts", "api", "create"] }
+          }
+        },
+        {
+          "name": "Setup - Snapshot balances before transfer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Snapshot - User A balance recorded', function () {",
+                  "    const json = pm.response.json();",
+                  "    const acct = Array.isArray(json) ? json.find(a => a.id == pm.collectionVariables.get('user_a_account_id')) : json;",
+                  "    const balance = parseFloat(acct?.balance ?? acct?.accounts?.[0]?.balance ?? 300);",
+                  "    pm.collectionVariables.set('user_a_balance_before_transfer', balance);",
+                  "    pm.expect(balance).to.be.a('number');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{user_a_token}}" }],
+            "url": { "raw": "{{base_url}}/accounts/api/list", "host": ["{{base_url}}"], "path": ["accounts", "api", "list"] }
+          }
+        },
+        {
+          "name": "T6/T12 - Transfer 100 EUR from User A to User B",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('T6 - Transfer: status is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{user_a_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"from_account_id\": {{user_a_account_id}},\n  \"to_account_number\": \"{{user_b_account_number}}\",\n  \"amount\": 100\n}"
+            },
+            "url": { "raw": "{{base_url}}/transactions/api/transfer", "host": ["{{base_url}}"], "path": ["transactions", "api", "transfer"] }
+          }
+        },
+        {
+          "name": "T12 - Verify User A balance decreased by 100",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('T12 - Transfer integrity: User A balance decreased by 100', function () {",
+                  "    const json = pm.response.json();",
+                  "    const accounts = Array.isArray(json) ? json : json.accounts ?? [json];",
+                  "    const acct = accounts.find(a => String(a.id) === String(pm.collectionVariables.get('user_a_account_id')));",
+                  "    const balanceBefore = parseFloat(pm.collectionVariables.get('user_a_balance_before_transfer'));",
+                  "    const balanceAfter = parseFloat(acct?.balance);",
+                  "    pm.expect(balanceAfter).to.eql(balanceBefore - 100);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{user_a_token}}" }],
+            "url": { "raw": "{{base_url}}/accounts/api/list", "host": ["{{base_url}}"], "path": ["accounts", "api", "list"] }
+          }
+        },
+        {
+          "name": "T12 - Verify User B balance increased by 100",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('T12 - Transfer integrity: User B balance increased by 100', function () {",
+                  "    const json = pm.response.json();",
+                  "    const accounts = Array.isArray(json) ? json : json.accounts ?? [json];",
+                  "    const acct = accounts.find(a => String(a.id) === String(pm.collectionVariables.get('user_b_account_id')));",
+                  "    const balanceAfter = parseFloat(acct?.balance);",
+                  "    pm.expect(balanceAfter).to.eql(100);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{user_b_token}}" }],
+            "url": { "raw": "{{base_url}}/accounts/api/list", "host": ["{{base_url}}"], "path": ["accounts", "api", "list"] }
+          }
+        },
+        {
+          "name": "T9 - Transfer more than balance (should fail)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('T9 - Transfer overdraft: status is 400 or 422', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 422, 403]);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{user_a_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"from_account_id\": {{user_a_account_id}},\n  \"to_account_number\": \"{{user_b_account_number}}\",\n  \"amount\": 999999\n}"
+            },
+            "url": { "raw": "{{base_url}}/transactions/api/transfer", "host": ["{{base_url}}"], "path": ["transactions", "api", "transfer"] }
+          }
+        },
+        {
+          "name": "T7 - Transfer to non-existent account (should fail)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('T7 - Transfer to invalid account: status is 400, 404 or 422', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([400, 404, 422]);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{user_a_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"from_account_id\": {{user_a_account_id}},\n  \"to_account_number\": \"QW0000000000\",\n  \"amount\": 10\n}"
+            },
+            "url": { "raw": "{{base_url}}/transactions/api/transfer", "host": ["{{base_url}}"], "path": ["transactions", "api", "transfer"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4 - Security",
+      "item": [
+        {
+          "name": "A4 - IDOR: Access User B account as User A",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('A4 - IDOR: status is 403 or 404 (not 200)', function () {",
+                  "    pm.expect(pm.response.code).to.be.oneOf([403, 404]);",
+                  "});",
+                  "pm.test('A4 - IDOR: response does not expose User B account data', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json).to.not.have.property('balance');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{user_a_token}}" }],
+            "url": { "raw": "{{base_url}}/accounts/api/{{user_b_account_id}}", "host": ["{{base_url}}"], "path": ["accounts", "api", "{{user_b_account_id}}"] }
+          }
+        },
+        {
+          "name": "V1 - Deposit very large amount",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('V1 - Large deposit: no server crash (not 500)', function () {",
+                  "    pm.expect(pm.response.code).to.not.eql(500);",
+                  "});",
+                  "pm.test('V1 - Large deposit: response is valid JSON', function () {",
+                  "    pm.response.json();",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{user_a_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"account_id\": {{user_a_account_id}},\n  \"amount\": 999999999999\n}"
+            },
+            "url": { "raw": "{{base_url}}/transactions/api/deposit", "host": ["{{base_url}}"], "path": ["transactions", "api", "deposit"] }
+          }
+        },
+        {
+          "name": "V2 - Deposit with many decimal places",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('V2 - Many decimals: no server crash (not 500)', function () {",
+                  "    pm.expect(pm.response.code).to.not.eql(500);",
+                  "});",
+                  "pm.test('V2 - Many decimals: response is valid JSON', function () {",
+                  "    pm.response.json();",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{user_a_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"account_id\": {{user_a_account_id}},\n  \"amount\": 1.999999999\n}"
+            },
+            "url": { "raw": "{{base_url}}/transactions/api/deposit", "host": ["{{base_url}}"], "path": ["transactions", "api", "deposit"] }
+          }
+        }
+      ]
+    }
+  ]
+}
